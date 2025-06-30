@@ -5,14 +5,14 @@ A Node.js server with Sharp for automated image cropping with admin confirmation
 ## Setup
 
 1. Install dependencies:
-\`\`\`bash
+```bash
 npm install express multer sharp uuid
-\`\`\`
+```
 
 2. Run the server:
-\`\`\`bash
+```bash
 node server.js
-\`\`\`
+```
 
 3. Open http://localhost:3000 for the admin dashboard
 

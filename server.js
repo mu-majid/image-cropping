@@ -8,18 +8,14 @@ const { v4: uuidv4 } = require('uuid');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
-// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static files
 app.use('/css', express.static('public/css'));
 app.use('/js', express.static('public/js'));
 app.use('/uploads', express.static('uploads'));
 app.use('/cropped', express.static('cropped'));
 
-// Create necessary directories
 const createDirectories = async () => {
   const dirs = ['uploads', 'cropped', 'public', 'public/css', 'public/js'];
   for (const dir of dirs) {
@@ -31,7 +27,6 @@ const createDirectories = async () => {
   }
 };
 
-// Storage configuration
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'uploads/');
@@ -69,9 +64,7 @@ const cropPresets = {
   custom: { width: null, height: null, fit: 'cover' } // Will be set by user
 };
 
-// Routes
 
-// Serve admin dashboard
 app.get('/', async (req, res) => {
   try {
     const htmlPath = path.join(__dirname, 'public', 'index.html');
@@ -81,7 +74,6 @@ app.get('/', async (req, res) => {
   }
 });
 
-// Upload and crop endpoint
 app.post('/upload', upload.single('image'), async (req, res) => {
   try {
     if (!req.file) {
@@ -158,7 +150,6 @@ app.post('/upload', upload.single('image'), async (req, res) => {
   }
 });
 
-// API endpoints
 app.get('/api/pending', (req, res) => {
   const pending = Array.from(pendingCrops.values());
   res.json(pending);
@@ -231,7 +222,6 @@ app.delete('/api/delete/:id', async (req, res) => {
   }
 });
 
-// Error handling middleware
 app.use((error, req, res, next) => {
   if (error instanceof multer.MulterError) {
     if (error.code === 'LIMIT_FILE_SIZE') {
@@ -243,7 +233,6 @@ app.use((error, req, res, next) => {
   res.status(500).json({ error: 'Internal server error' });
 });
 
-// Start server
 const startServer = async () => {
   await createDirectories();
   app.listen(PORT, () => {

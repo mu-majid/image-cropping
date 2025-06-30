@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Cropping Dashboard</title>
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Image Cropping Dashboard</h1>
+    
+    <div class="section upload-form">
+      <h2>Upload & Crop Images</h2>
+      <form id="uploadForm" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="image">Select Image:</label>
+          <input type="file" id="image" name="image" accept="image/*" required>
+        </div>
+        <div class="form-group">
+          <label for="cropType">Crop Type:</label>
+          <select id="cropType" name="cropType" required>
+            <option value="thumbnail">Thumbnail (150x150)</option>
+            <option value="banner">Banner (1200x400)</option>
+            <option value="avatar">Avatar (200x200)</option>
+            <option value="product">Product (800x600)</option>
+            <option value="square">Square (500x500)</option>
+            <option value="custom">Custom Size</option>
+          </select>
+        </div>
+        <div id="customSizeFields" style="display: none;">
+          <div class="form-group">
+            <label for="customWidth">Width:</label>
+            <input type="number" id="customWidth" name="customWidth" min="1">
+          </div>
+          <div class="form-group">
+            <label for="customHeight">Height:</label>
+            <input type="number" id="customHeight" name="customHeight" min="1">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Upload & Crop</button>
+      </form>
+      <div id="uploadStatus"></div>
+    </div>
+
+    <div class="section">
+      <h2>Pending Crops for Review</h2>
+      <div id="pendingCrops" class="preview-grid">
+        <p>No pending crops...</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Approved Crops</h2>
+      <div id="approvedCrops" class="preview-grid">
+        <p>No approved crops...</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>

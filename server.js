@@ -4,21 +4,24 @@ const sharp = require('sharp');
 const path = require('path');
 const fs = require('fs').promises;
 const { v4: uuidv4 } = require('uuid');
-const { DASHBOARD_TEMPLATE } =  require('./dashboard');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
+// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
+
+// Serve static files
+app.use('/css', express.static('public/css'));
+app.use('/js', express.static('public/js'));
 app.use('/uploads', express.static('uploads'));
 app.use('/cropped', express.static('cropped'));
 
 // Create necessary directories
 const createDirectories = async () => {
-  const dirs = ['uploads', 'cropped', 'public'];
+  const dirs = ['uploads', 'cropped', 'public', 'public/css', 'public/js'];
   for (const dir of dirs) {
     try {
       await fs.mkdir(dir, { recursive: true });
@@ -69,8 +72,13 @@ const cropPresets = {
 // Routes
 
 // Serve admin dashboard
-app.get('/', (req, res) => {
-  res.send(DASHBOARD_TEMPLATE);
+app.get('/', async (req, res) => {
+  try {
+    const htmlPath = path.join(__dirname, 'public', 'index.html');
+    res.sendFile(htmlPath);
+  } catch (error) {
+    res.status(500).send('Error loading dashboard');
+  }
 });
 
 // Upload and crop endpoint
@@ -201,6 +209,25 @@ app.post('/api/reject/:id', async (req, res) => {
   catch (error) {
     console.error('Rejection error:', error);
     res.status(500).json({ error: 'Failed to reject crop' });
+  }
+});
+
+app.delete('/api/delete/:id', async (req, res) => {
+  const cropId = req.params.id;
+  const cropData = approvedCrops.get(cropId);
+
+  if (!cropData) {
+    return res.status(404).json({ error: 'Approved crop not found' });
+  }
+
+  try {
+    await fs.unlink(cropData.croppedPath);
+    approvedCrops.delete(cropId);
+    res.json({ success: true, message: 'Approved crop deleted successfully' });
+  } 
+  catch (error) {
+    console.error('Delete error:', error);
+    res.status(500).json({ error: 'Failed to delete approved crop' });
   }
 });
 

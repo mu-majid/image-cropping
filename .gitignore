@@ -1,0 +1,9 @@
+node_modules/
+uploads/
+cropped/
+.env
+.DS_Store
+*.log
+npm-debug.log*
+.npm
+.eslintcache
